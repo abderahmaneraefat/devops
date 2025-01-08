@@ -1,0 +1,45 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Checkout Code') {
+            steps {
+                git 'https://github.com/username/devops.git'
+            }
+        }
+        stage('Build Docker Image') {
+            steps {
+                // Construire l'image Docker à partir du Dockerfile
+                sh 'docker build -t devops .'
+            }
+        }
+        stage('Run Docker Compose') {
+            steps {
+                // Lancer les services définis dans docker-compose.yml
+                sh 'docker-compose up -d'
+            }
+        }
+        stage('Test Application') {
+            steps {
+                // Lancer des tests unitaires ou fonctionnels sur app.py
+                sh 'pytest tests/'
+            }
+        }
+        stage('Push Docker Image') {
+            steps {
+                // Pousser l'image Docker dans un registre (exemple : Docker Hub)
+                withCredentials([usernamePassword(credentialsId: 'docker-hub', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                    sh 'docker login -u $DOCKER_USER -p $DOCKER_PASS'
+                    sh 'docker tag my-app my-dockerhub-username/my-app:latest'
+                    sh 'docker push my-dockerhub-username/my-app:latest'
+                }
+            }
+        }
+        stage('Deploy to Kubernetes') {
+            steps {
+                // Déployer les fichiers Kubernetes YAML
+                sh 'kubectl apply -f kubernetes.yml'
+            }
+        }
+    }
+}
