@@ -4,30 +4,31 @@ pipeline {
     stages {
         stage('Checkout Code') {
             steps {
+                echo "Checking out the code from GitHub..."
                 git 'https://github.com/username/devops.git'
             }
         }
         stage('Build Docker Image') {
             steps {
-                // Construire l'image Docker à partir du Dockerfile
+                echo "Building Docker image..."
                 sh 'docker build -t devops .'
             }
         }
         stage('Run Docker Compose') {
             steps {
-                // Lancer les services définis dans docker-compose.yml
+                echo "Starting services with Docker Compose..."
                 sh 'docker-compose up -d'
             }
         }
         stage('Test Application') {
             steps {
-                // Lancer des tests unitaires ou fonctionnels sur app.py
+                echo "Running tests on the application..."
                 sh 'pytest tests/'
             }
         }
         stage('Push Docker Image') {
             steps {
-                // Pousser l'image Docker dans un registre (exemple : Docker Hub)
+                echo "Pushing Docker image to Docker Hub..."
                 withCredentials([usernamePassword(credentialsId: 'docker-hub', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
                     sh 'docker login -u $DOCKER_USER -p $DOCKER_PASS'
                     sh 'docker tag my-app my-dockerhub-username/my-app:latest'
@@ -37,7 +38,7 @@ pipeline {
         }
         stage('Deploy to Kubernetes') {
             steps {
-                // Déployer les fichiers Kubernetes YAML
+                echo "Deploying to Kubernetes..."
                 sh 'kubectl apply -f kubernetes.yml'
             }
         }
