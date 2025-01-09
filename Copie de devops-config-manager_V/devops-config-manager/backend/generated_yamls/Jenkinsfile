@@ -5,7 +5,7 @@ pipeline {
         stage('Checkout Code') {
             steps {
                 echo "Checking out the code from GitHub..."
-                git 'https://github.com/username/devops.git'
+                git 'https://github.com/abderahmaneraefat/devops.git'
             }
         }
         stage('Build Docker Image') {
