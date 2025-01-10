@@ -11,13 +11,13 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 echo "Building Docker image..."
-                sh 'docker build -t devops .'
+                sh 'docker build -t devops-config-manager-backend .'
             }
         }
         stage('Run Docker Compose') {
             steps {
                 echo "Starting services with Docker Compose..."
-                sh 'docker-compose up -d'
+                sh 'docker-compose -f generated_yamls/docker-compose.yaml up -d'
             }
         }
         stage('Test Application') {
@@ -31,15 +31,15 @@ pipeline {
                 echo "Pushing Docker image to Docker Hub..."
                 withCredentials([usernamePassword(credentialsId: 'docker-hub', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
                     sh 'docker login -u $DOCKER_USER -p $DOCKER_PASS'
-                    sh 'docker tag devops $DOCKER_USER/devops:latest'
-                    sh 'docker push $DOCKER_USER/devops:latest'
+                    sh 'docker tag devops-config-manager-backend $DOCKER_USER/devops-config-manager-backend:latest'
+                    sh 'docker push $DOCKER_USER/devops-config-manager-backend:latest'
                 }
             }
         }
         stage('Deploy to Kubernetes') {
             steps {
                 echo "Deploying to Kubernetes..."
-                sh 'kubectl apply -f kubernetes.yml'
+                sh 'kubectl apply -f generated_yamls/kubernetes.yml'
             }
         }
     }
