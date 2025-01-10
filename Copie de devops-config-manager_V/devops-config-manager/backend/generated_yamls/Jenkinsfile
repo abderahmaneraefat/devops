@@ -5,7 +5,7 @@ pipeline {
        stage('Checkout Code') {
     steps {
         echo "Checking out the code from GitHub..."
-        git credentialsId: 'github-token2', branch: 'main', url: 'https://github.com/abderahmaneraefat/devops.git'
+         url: 'https://github.com/abderahmaneraefat/devops.git'
 
     }
 }
