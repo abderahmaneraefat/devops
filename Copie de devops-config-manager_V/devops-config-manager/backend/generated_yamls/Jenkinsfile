@@ -11,19 +11,19 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 echo "Building Docker image..."
-                bat 'docker build -t devops-config-manager-backend .'
+                bat 'docker build -t ../ '
             }
         }
         stage('Run Docker Compose') {
             steps {
                 echo "Starting services with Docker Compose..."
-                bat 'docker-compose -f generated_yamls/docker-compose.yaml up -d'
+                bat 'docker-compose -f docker-compose.yaml up -d'
             }
         }
         stage('Test Application') {
             steps {
                 echo "Running tests on the application..."
-                bat 'pytest tests/'
+                bat 'pytest ../tests/'
             }
         }
         stage('Push Docker Image') {
@@ -31,15 +31,15 @@ pipeline {
                 echo "Pushing Docker image to Docker Hub..."
                 withCredentials([usernamePassword(credentialsId: 'docker-hub', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
                     bat 'docker login -u %DOCKER_USER% -p %DOCKER_PASS%'
-                    bat 'docker tag devops-config-manager-backend %DOCKER_USER%/devops-config-manager-backend:latest'
-                    bat 'docker push %DOCKER_USER%/devops-config-manager-backend:latest'
+                    bat 'docker tag ../ %DOCKER_USER%/../:latest'
+                    bat 'docker push %DOCKER_USER%/../:latest'
                 }
             }
         }
         stage('Deploy to Kubernetes') {
             steps {
                 echo "Deploying to Kubernetes..."
-                bat 'kubectl apply -f generated_yamls/kubernetes.yml'
+                bat 'kubectl apply -f kubernetes.yml'
             }
         }
     }
