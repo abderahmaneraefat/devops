@@ -5,7 +5,7 @@ pipeline {
         stage('Checkout Code') {
             steps {
                 echo "Checking out the code from GitHub..."
-                git branch: 'main', url: 'https://github.com/abderahmaneraefat/devops.git'
+                git branch: 'main',credentialsId :'githubtoken' url: 'https://github.com/abderahmaneraefat/devops.git'
             }
         }
         stage('Build Docker Image') {
@@ -29,7 +29,7 @@ pipeline {
         stage('Push Docker Image') {
             steps {
                 echo "Pushing Docker image to Docker Hub..."
-                withCredentials([usernamePassword(credentialsId: 'docker-hub', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                withCredentials([usernamePassword(credentialsId: 'githubtoken', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
                     bat 'docker login -u %DOCKER_USER% -p %DOCKER_PASS%'
                     bat 'docker tag ../ %DOCKER_USER%/../:latest'
                     bat 'docker push %DOCKER_USER%/../:latest'
