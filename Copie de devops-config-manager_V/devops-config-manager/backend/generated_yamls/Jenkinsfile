@@ -13,7 +13,7 @@ pipeline {
             steps {
                 echo "Building Docker image..."
                 // Construire l'image Docker avec un nom spécifié
-                bat 'docker build -t my-backend-image:latest -f ../Dockerfile .'  // 'my-backend-image' est un exemple de nom d'image
+                sh 'docker build -t my-backend-image:latest -f ../Dockerfile .'  // 'my-backend-image' est un exemple de nom d'image
             }
         }
         
@@ -21,7 +21,7 @@ pipeline {
             steps {
                 echo "Starting services with Docker Compose..."
                 // Exécuter docker-compose pour démarrer les services
-                bat 'docker-compose -f docker-compose.yaml up -d'
+                sh 'docker-compose -f docker-compose.yaml up -d'
             }
         }
         
@@ -29,7 +29,7 @@ pipeline {
             steps {
                 echo "Running tests on the application..."
                 // Lancer les tests avec pytest
-                bat 'pytest ../tests/test_app.py'  // Vérifiez le chemin vers vos tests
+                sh 'pytest ../tests/test_app.py'  // Vérifiez le chemin vers vos tests
             }
         }
         
@@ -38,13 +38,13 @@ pipeline {
                 echo "Pushing Docker image to Docker Hub..."
                 withCredentials([usernamePassword(credentialsId: 'githubtokenn', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
                     // Connexion à Docker Hub avec les credentials
-                    bat 'docker login -u %DOCKER_USER% -p %DOCKER_PASS%'
+                    sh 'docker login -u $DOCKER_USER -p $DOCKER_PASS'
                     
                     // Taguer l'image Docker avec le nom d'utilisateur et l'image
-                    bat 'docker tag my-backend-image:latest %DOCKER_USER%/my-backend-image:latest'
+                    sh 'docker tag my-backend-image:latest $DOCKER_USER/my-backend-image:latest'
                     
                     // Pousser l'image vers Docker Hub
-                    bat 'docker push %DOCKER_USER%/my-backend-image:latest'
+                    sh 'docker push $DOCKER_USER/my-backend-image:latest'
                 }
             }
         }
@@ -53,7 +53,7 @@ pipeline {
             steps {
                 echo "Deploying to Kubernetes..."
                 // Appliquer la configuration Kubernetes
-                bat 'kubectl apply -f kubernetes.yml'
+                sh 'kubectl apply -f kubernetes.yml'
             }
         }
     }
