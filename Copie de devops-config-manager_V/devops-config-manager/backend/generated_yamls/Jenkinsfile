@@ -13,7 +13,7 @@ pipeline {
             steps {
                 echo "Building Docker image..."
                 sh 'echo "Starting Docker build..."'  // Message de débogage
-                sh 'docker build -t abderrahmaneraefat/my-backend-image:latest -f ../Dockerfile . --no-cache --progress=plain'  // Ajout de la commande avec options de débogage
+                sh 'docker build -t my-backend-image:latest -f devops-config-manager_V/devops-config-manager/backend/Dockerfile . --no-cache --progress=plain'
                 sh 'echo "Docker image built!"'  // Message pour vérifier que la commande a bien terminé
             }
         }
