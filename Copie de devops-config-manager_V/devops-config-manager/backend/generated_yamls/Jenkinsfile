@@ -12,27 +12,27 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 echo "Building Docker image..."
-                sh 'echo "Starting Docker build..."'  // Message de débogage
-                sh 'docker build -t my-backend-image:latest -f devops-config-manager_V/devops-config-manager/backend/Dockerfile . --no-cache --progress=plain'
-                sh 'echo "Docker image built!"'  // Message pour vérifier que la commande a bien terminé
+                bat 'echo Starting Docker build...'  // Message de débogage
+                bat 'docker build -t abderrahmaneraefat/my-backend-image:latest -f ../Dockerfile . --no-cache --progress=plain'  // Ajout de la commande avec options de débogage
+                bat 'echo Docker image built!'  // Message pour vérifier que la commande a bien terminé
             }
         }
 
         stage('Run Docker Compose') {
             steps {
                 echo "Starting services with Docker Compose..."
-                sh 'echo "Starting Docker Compose..."'  // Message de débogage
-                sh 'docker-compose -f docker-compose.yaml up -d'  // Exécution de Docker Compose
-                sh 'echo "Docker Compose started!"'  // Message pour vérifier que Docker Compose a démarré
+                bat 'echo Starting Docker Compose...'  // Message de débogage
+                bat 'docker-compose -f docker-compose.yaml up -d'  // Exécution de Docker Compose
+                bat 'echo Docker Compose started!'  // Message pour vérifier que Docker Compose a démarré
             }
         }
 
         stage('Test Application') {
             steps {
                 echo "Running tests on the application..."
-                sh 'echo "Running pytest tests..."'  // Message de débogage
-                sh 'pytest ../tests/test_app.py'  // Lancer les tests avec pytest
-                sh 'echo "Tests completed!"'  // Message pour vérifier que les tests ont bien été exécutés
+                bat 'echo Running pytest tests...'  // Message de débogage
+                bat 'pytest ../tests/test_app.py'  // Lancer les tests avec pytest
+                bat 'echo Tests completed!'  // Message pour vérifier que les tests ont bien été exécutés
             }
         }
 
@@ -41,19 +41,19 @@ pipeline {
                 echo "Pushing Docker image to Docker Hub..."
                 withCredentials([usernamePassword(credentialsId: 'jenkins-token', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
                     // Connexion à Docker Hub avec les credentials
-                    sh 'echo "Logging in to Docker Hub..."'
-                    sh 'docker login -u $DOCKER_USER -p $DOCKER_PASS'
-                    sh 'echo "Docker login successful!"'
-                    
+                    bat 'echo Logging in to Docker Hub...'
+                    bat 'docker login -u %DOCKER_USER% -p %DOCKER_PASS%'
+                    bat 'echo Docker login successful!'
+
                     // Taguer l'image Docker avec le nom d'utilisateur et l'image
-                    sh 'echo "Tagging Docker image..."'
-                    sh 'docker tag abderrahmaneraefat/my-backend-image:latest $DOCKER_USER/my-backend-image:latest'
-                    sh 'echo "Docker image tagged!"'
-                    
+                    bat 'echo Tagging Docker image...'
+                    bat 'docker tag abderrahmaneraefat/my-backend-image:latest %DOCKER_USER%/my-backend-image:latest'
+                    bat 'echo Docker image tagged!'
+
                     // Pousser l'image vers Docker Hub
-                    sh 'echo "kPushing Docker image to Docker Hub..."'
-                    sh 'docker push $DOCKER_USER/my-backend-image:latest'
-                    sh 'echo "Docker image pushed to Docker Hub!"'
+                    bat 'echo Pushing Docker image to Docker Hub...'
+                    bat 'docker push %DOCKER_USER%/my-backend-image:latest'
+                    bat 'echo Docker image pushed to Docker Hub!'
                 }
             }
         }
@@ -61,9 +61,9 @@ pipeline {
         stage('Deploy to Kubernetes') {
             steps {
                 echo "Deploying to Kubernetes..."
-                sh 'echo "Applying Kubernetes configurations..."'
-                sh 'kubectl apply -f kubernetes.yml'
-                sh 'echo "Kubernetes deployment completed!"'
+                bat 'echo Applying Kubernetes configurations...'
+                bat 'kubectl apply -f kubernetes.yml'
+                bat 'echo Kubernetes deployment completed!'
             }
         }
     }
