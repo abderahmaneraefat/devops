@@ -13,7 +13,7 @@ pipeline {
             steps {
                 echo "Building Docker image..."
                 sh 'echo "Starting Docker build..."'  // Message de débogage
-                sh 'docker build -t my-backend-image:latest -f ../Dockerfile . --no-cache --progress=plain'  // Ajout de la commande avec options de débogage
+                sh 'docker build -t abderrahmaneraefat/my-backend-image:latest -f ../Dockerfile . --no-cache --progress=plain'  // Ajout de la commande avec options de débogage
                 sh 'echo "Docker image built!"'  // Message pour vérifier que la commande a bien terminé
             }
         }
@@ -39,7 +39,7 @@ pipeline {
         stage('Push Docker Image') {
             steps {
                 echo "Pushing Docker image to Docker Hub..."
-                withCredentials([usernamePassword(credentialsId: 'githubtokenn', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                withCredentials([usernamePassword(credentialsId: 'jenkins-token', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
                     // Connexion à Docker Hub avec les credentials
                     sh 'echo "Logging in to Docker Hub..."'
                     sh 'docker login -u $DOCKER_USER -p $DOCKER_PASS'
@@ -47,7 +47,7 @@ pipeline {
                     
                     // Taguer l'image Docker avec le nom d'utilisateur et l'image
                     sh 'echo "Tagging Docker image..."'
-                    sh 'docker tag my-backend-image:latest $DOCKER_USER/my-backend-image:latest'
+                    sh 'docker tag abderrahmaneraefat/my-backend-image:latest $DOCKER_USER/my-backend-image:latest'
                     sh 'echo "Docker image tagged!"'
                     
                     // Pousser l'image vers Docker Hub
