@@ -51,7 +51,7 @@ pipeline {
                     sh 'echo "Docker image tagged!"'
                     
                     // Pousser l'image vers Docker Hub
-                    sh 'echo "Pushing Docker image to Docker Hub..."'
+                    sh 'echo "kPushing Docker image to Docker Hub..."'
                     sh 'docker push $DOCKER_USER/my-backend-image:latest'
                     sh 'echo "Docker image pushed to Docker Hub!"'
                 }
