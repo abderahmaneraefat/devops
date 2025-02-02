@@ -13,7 +13,7 @@ pipeline {
             steps {
                 echo "Building Docker image..."
                 bat 'echo Starting Docker build...'  // Message de débogage
-                bat 'docker build -t my-backend-image:latest -f Dockerfile  '  // Ajout de la commande avec options de débogage
+                bat 'docker buildx build -t my-backend-image:latest -f Dockerfile  '  // Ajout de la commande avec options de débogage
                 bat 'echo Docker image built!'  // Message pour vérifier que la commande a bien terminé
             }
         }
