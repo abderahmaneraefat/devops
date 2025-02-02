@@ -13,7 +13,7 @@ pipeline {
             steps {
                 echo "Building Docker image..."
                 bat 'echo Starting Docker build...'  // Message de débogage
-                bat 'docker build -t abderrahmaneraefat/my-backend-image:latest -f ../Dockerfile . --no-cache --progress=plain'  // Ajout de la commande avec options de débogage
+                bat 'docker build -t abderrahmaneraefat/my-backend-image:latest -f Dockerfile . --no-cache --progress=plain'  // Ajout de la commande avec options de débogage
                 bat 'echo Docker image built!'  // Message pour vérifier que la commande a bien terminé
             }
         }
@@ -22,7 +22,7 @@ pipeline {
             steps {
                 echo "Starting services with Docker Compose..."
                 bat 'echo Starting Docker Compose...'  // Message de débogage
-                bat 'docker-compose -f docker-compose.yaml up -d'  // Exécution de Docker Compose
+                bat 'docker-compose -f generated_yamls/docker-compose.yaml up -d'  // Exécution de Docker Compose
                 bat 'echo Docker Compose started!'  // Message pour vérifier que Docker Compose a démarré
             }
         }
@@ -31,7 +31,7 @@ pipeline {
             steps {
                 echo "Running tests on the application..."
                 bat 'echo Running pytest tests...'  // Message de débogage
-                bat 'pytest ../tests/test_app.py'  // Lancer les tests avec pytest
+                bat 'pytest tests/test_app.py'  // Lancer les tests avec pytest
                 bat 'echo Tests completed!'  // Message pour vérifier que les tests ont bien été exécutés
             }
         }
@@ -62,7 +62,7 @@ pipeline {
             steps {
                 echo "Deploying to Kubernetes..."
                 bat 'echo Applying Kubernetes configurations...'
-                bat 'kubectl apply -f kubernetes.yml'
+                bat 'kubectl apply -f generated_yamls/kubernetes.yml'
                 bat 'echo Kubernetes deployment completed!'
             }
         }
